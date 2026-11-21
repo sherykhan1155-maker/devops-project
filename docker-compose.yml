@@ -1,0 +1,35 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: devops-app:latest
+    container_name: devops-web-app
+    restart: unless-stopped
+    ports:
+      - "8080:3000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    networks:
+      - devops-network
+
+  redis:
+    image: redis:7
+    container_name: devops-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - devops-network
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  devops-network:
+    driver: bridge
